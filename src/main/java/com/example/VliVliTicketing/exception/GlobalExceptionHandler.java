@@ -17,44 +17,44 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-//  @ExceptionHandler(WebExchangeBindException.class)
-//  public Mono<ResponseEntity<CustomErrorResponse>> handleValidationException(WebExchangeBindException ex) {
-//    Map<String, String> errors = new HashMap<>();
-//    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-//      errors.put(error.getField(), error.getDefaultMessage());
-//    }
-//
-//    CustomErrorResponse response = new CustomErrorResponse(
-//        HttpStatus.BAD_REQUEST.value(),
-//        HttpStatus.BAD_REQUEST.getReasonPhrase(),
-//        "Validation Failed",
-//        errors
-//    );
-//
-//    return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response));
-//  }
-//
-//  @ExceptionHandler(ServerWebInputException.class)
-//  public Mono<ResponseEntity<CustomErrorResponse>> handleEnumException(ServerWebInputException  ex) {
-//    CustomErrorResponse errorResponse = new CustomErrorResponse(
-//        HttpStatus.BAD_REQUEST.value(),
-//        HttpStatus.BAD_REQUEST.getReasonPhrase(),
-//        "Validation Failed",
-//        Map.of("error", ex.getMessage())
-//    );
-//
-//    return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse));
-//  }
-//
-//  @ExceptionHandler(Exception.class)
-//  public Mono<ResponseEntity<CustomErrorResponse>> handleException(Exception ex) {
-//    CustomErrorResponse errorResponse = new CustomErrorResponse(
-//        HttpStatus.INTERNAL_SERVER_ERROR.value(),
-//        HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-//        "An unexpected error occurred",
-//        Map.of("error", ex.getMessage())
-//    );
-//
-//    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse));
-//  }
+  @ExceptionHandler(WebExchangeBindException.class)
+  public Mono<ResponseEntity<CustomErrorResponse>> handleValidationException(WebExchangeBindException ex) {
+    Map<String, String> errors = new HashMap<>();
+    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+      errors.put(error.getField(), error.getDefaultMessage());
+    }
+
+    CustomErrorResponse response = new CustomErrorResponse(
+        HttpStatus.BAD_REQUEST.value(),
+        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+        "Validation Failed",
+        errors
+    );
+
+    return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response));
+  }
+
+  @ExceptionHandler(ServerWebInputException.class)
+  public Mono<ResponseEntity<CustomErrorResponse>> handleEnumException(ServerWebInputException  ex) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(
+        HttpStatus.BAD_REQUEST.value(),
+        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+        "Validation Failed",
+        Map.of("error", ex.getMessage())
+    );
+
+    return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse));
+  }
+
+  @ExceptionHandler(Exception.class)
+  public Mono<ResponseEntity<CustomErrorResponse>> handleException(Exception ex) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+        HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+        "An unexpected error occurred",
+        Map.of("error", ex.getMessage())
+    );
+
+    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse));
+  }
 }

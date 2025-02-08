@@ -8,6 +8,6 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface TicketRepository extends ReactiveMongoRepository<Ticket, String> {
   Flux<Ticket> findByTitleContainingIgnoreCaseOrCreatedByContainingIgnoreCase(String title, String username);
-  Flux<Ticket> findByCreatedByIgnoreCase(String username);
+  Flux<Ticket> findByCreatedByContainingIgnoreCase(String username);
   Flux<Ticket> findByTitleContainingIgnoreCase(String title);
 }

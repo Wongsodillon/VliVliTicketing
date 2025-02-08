@@ -11,19 +11,14 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(name = "RestResponse", description = "Standard API response")
 public class RestResponse<T> {
 
-  @Schema(description = "Response code", example = "200")
   private Integer code;
 
-  @Schema(description = "Response status", example = "OK")
   private String status;
 
-  @Schema(description = "Response data")
   private T data;
 
-  @Schema(description = "Message", example = "Success")
   private String message;
 
   public RestResponse(T data) {

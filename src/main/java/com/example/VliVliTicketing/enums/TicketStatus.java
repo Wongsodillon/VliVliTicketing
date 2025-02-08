@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 public enum TicketStatus {
   ACTIVE,
+  PENDING,
   CLOSED;
 
   @JsonCreator

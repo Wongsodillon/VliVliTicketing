@@ -10,19 +10,14 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(name = "CustomErrorResponse", description = "Standard API error response")
 public class CustomErrorResponse {
 
-  @Schema(description = "Response code", example = "400")
   private Integer code;
 
-  @Schema(description = "Response status", example = "BAD_REQUEST")
   private String status;
 
-  @Schema(description = "Error message", example = "Validation failed")
   private String message;
 
-  @Schema(description = "Field validation errors")
   private Map<String, String> errors;
 
   public CustomErrorResponse(HttpStatus httpStatus, String message) {

@@ -15,8 +15,13 @@ public class TicketService {
   @Autowired
   private TicketRepository ticketRepository;
 
+  @Autowired
+  private TicketRedisService ticketRedisService;
+
   public Flux<Ticket> getTickets(String keyword, String username, Boolean isAscending) {
     Flux<Ticket> tickets;
+    String cacheKey = ticketRedisService.generateCacheKey(keyword, username, isAscending);
+
     if (keyword != null && !keyword.isEmpty() && username != null && !username.isEmpty()) {
       tickets = ticketRepository.findByTitleContainingIgnoreCaseOrCreatedByContainingIgnoreCase(keyword, username);
     }
@@ -24,20 +29,19 @@ public class TicketService {
       tickets = ticketRepository.findByTitleContainingIgnoreCase(keyword);
     }
     else if (username != null && !username.isEmpty()) {
-      tickets = ticketRepository.findByCreatedByIgnoreCase(username);
+      tickets = ticketRepository.findByCreatedByContainingIgnoreCase(username);
     }
     else {
       tickets = ticketRepository.findAll();
     }
+
     if (isAscending == null) {
       return tickets;
     }
-    Comparator<Ticket> comparator;
-    if (isAscending) {
-      comparator = Comparator.comparing(Ticket::getCreatedDate);
-    } else {
-      comparator = Comparator.comparing(Ticket::getCreatedDate).reversed();
-    }
+
+    Comparator<Ticket> comparator = isAscending
+        ? Comparator.comparing(Ticket::getCreatedDate)
+        : Comparator.comparing(Ticket::getCreatedDate).reversed();
     return tickets.sort(comparator);
   }
 

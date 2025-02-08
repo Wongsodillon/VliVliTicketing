@@ -40,6 +40,7 @@ public class Ticket {
   private String createdBy;
 
   @NotNull(message = "Version is required")
+  @Size(min = 1, message = "Version must be at least 1")
   private Integer version;
   private Date updatedDate;
 
