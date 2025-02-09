@@ -16,14 +16,30 @@ public class TicketService {
   private TicketRepository ticketRepository;
 
   @Autowired
-  private TicketRedisService ticketRedisService;
+  private TicketCacheService ticketCacheService;
 
   public Flux<Ticket> getTickets(String keyword, String username, Boolean isAscending) {
+
+    String cacheKey = ticketCacheService.generateCacheKey(keyword, username, isAscending);
+//    return fetchFromDatabase(keyword, username, isAscending);
+    return ticketCacheService.get(cacheKey)
+            .flatMapMany(Flux::fromIterable)
+            .switchIfEmpty(
+                    fetchFromDatabase(keyword, username, isAscending)
+                            .collectList()
+                            .flatMapMany(tickets ->
+                                    ticketCacheService.put(cacheKey, tickets)
+                                    .thenMany(Flux.fromIterable(tickets))
+                            )
+            );
+
+  }
+
+  public Flux<Ticket> fetchFromDatabase(String keyword, String username, Boolean isAscending) {
     Flux<Ticket> tickets;
-    String cacheKey = ticketRedisService.generateCacheKey(keyword, username, isAscending);
 
     if (keyword != null && !keyword.isEmpty() && username != null && !username.isEmpty()) {
-      tickets = ticketRepository.findByTitleContainingIgnoreCaseOrCreatedByContainingIgnoreCase(keyword, username);
+      tickets = ticketRepository.findByTitleContainingIgnoreCaseAndCreatedByContainingIgnoreCase(keyword, username);
     }
     else if (keyword != null && !keyword.isEmpty()) {
       tickets = ticketRepository.findByTitleContainingIgnoreCase(keyword);
@@ -40,8 +56,8 @@ public class TicketService {
     }
 
     Comparator<Ticket> comparator = isAscending
-        ? Comparator.comparing(Ticket::getCreatedDate)
-        : Comparator.comparing(Ticket::getCreatedDate).reversed();
+            ? Comparator.comparing(Ticket::getCreatedDate)
+            : Comparator.comparing(Ticket::getCreatedDate).reversed();
     return tickets.sort(comparator);
   }
 

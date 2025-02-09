@@ -1,7 +1,6 @@
 package com.example.VliVliTicketing.controller;
 
 import com.example.VliVliTicketing.entity.Ticket;
-import com.example.VliVliTicketing.response.CustomErrorResponse;
 import com.example.VliVliTicketing.response.RestListResponse;
 import com.example.VliVliTicketing.response.RestResponse;
 import com.example.VliVliTicketing.service.TicketService;
@@ -10,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +38,13 @@ public class TicketController {
   ) {
     return ticketService.getTickets(keyword, username, isAscending)
         .collectList()
-        .map(RestListResponse::new);
+        .flatMap(tickets -> {
+            if (tickets.isEmpty()) {
+                return Mono.just(new RestListResponse<>(tickets, "No tickets found"));
+            } else {
+                return Mono.just(new RestListResponse<>(tickets));
+            }
+        });
   }
 
   @PostMapping("/")

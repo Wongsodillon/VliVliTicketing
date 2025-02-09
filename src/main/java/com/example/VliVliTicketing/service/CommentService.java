@@ -1,7 +1,6 @@
 package com.example.VliVliTicketing.service;
 
 import com.example.VliVliTicketing.entity.Comment;
-import com.example.VliVliTicketing.entity.Ticket;
 import com.example.VliVliTicketing.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
