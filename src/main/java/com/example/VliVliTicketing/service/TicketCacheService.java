@@ -44,12 +44,10 @@ public class TicketCacheService {
 
     public Mono<List<Ticket>> get(String key) {
         return redisTemplate.opsForValue().get(key)
-                .doOnSubscribe(subscription -> log.info("🔍 Checking Redis for key: {}", key))
+                .doOnSubscribe(subscription -> log.info("Checking Redis"))
                 .doOnNext(data -> {
                     if (data != null) {
-                        log.info("✅ CACHE HIT: Data found in Redis for key: {}", key);
-                    } else {
-                        log.warn("⚠️ CACHE MISS: No data found in Redis for key: {}", key);
+                        log.info("Cached Data Found key: {}", key);
                     }
                 })
                 .switchIfEmpty(Mono.empty());
